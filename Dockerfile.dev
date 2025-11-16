@@ -1,0 +1,19 @@
+# Development Dockerfile with hot-reload and TypeScript
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy root package files
+COPY package.json package-lock.json ./
+
+# Copy both workspaces
+COPY backend ./backend
+COPY frontend ./frontend
+
+# Install all dependencies (including dev)
+RUN npm run install:all
+
+EXPOSE 4000 3000
+
+# Default to running backend dev with ts-node, can override with frontend or both
+CMD ["npm", "run", "start:backend"]

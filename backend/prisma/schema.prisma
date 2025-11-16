@@ -1,0 +1,148 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  password  String   // Should be hashed with bcrypt
+  role      UserRole @default(STUDENT)
+
+  // Relations
+  lessonsAuthor  Lesson[]
+  submissions    Submission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([username])
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  difficulty  Difficulty
+  category    String
+  content     String   // Markdown content
+
+  // Relations
+  author      User     @relation("LessonAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  problems    Problem[]
+  userProgress UserProgress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([category])
+  @@map("lessons")
+}
+
+model Problem {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  difficulty  Difficulty
+  initialCode String
+  language    String   @default("javascript")
+
+  // Relations
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId    String
+  testCases   TestCase[]
+  submissions Submission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lessonId])
+  @@map("problems")
+}
+
+model TestCase {
+  id        String   @id @default(cuid())
+  input     String
+  output    String
+  isHidden  Boolean  @default(false)
+
+  // Relations
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId String
+
+  createdAt DateTime @default(now())
+
+  @@index([problemId])
+  @@map("test_cases")
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  code      String
+  language  String   @default("javascript")
+  status    SubmissionStatus @default(PENDING)
+  result    String?  // JSON stringified result
+  score     Int      @default(0)
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([problemId])
+  @@index([status])
+  @@map("submissions")
+}
+
+model UserProgress {
+  id        String   @id @default(cuid())
+  lessonsCompleted Int @default(0)
+  problemsSolved   Int @default(0)
+  totalScore       Int @default(0)
+
+  // Relations
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId  String   @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_progress")
+}
+
+enum UserRole {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum SubmissionStatus {
+  PENDING
+  ACCEPTED
+  WRONG_ANSWER
+  TIME_LIMIT_EXCEEDED
+  RUNTIME_ERROR
+  COMPILATION_ERROR
+}

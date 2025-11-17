@@ -1,5 +1,5 @@
 // backend/src/services/authService.ts
-import * as jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
@@ -22,8 +22,8 @@ export interface LoginResponse {
 }
 
 export class AuthService {
-  private static readonly JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key_here_change_in_production";
-  private static readonly JWT_EXPIRY = process.env.JWT_EXPIRY || "24h";
+  private static readonly JWT_SECRET: string = process.env.JWT_SECRET || "your_jwt_secret_key_here_change_in_production";
+  private static readonly JWT_EXPIRY: string = process.env.JWT_EXPIRY || "24h";
 
   /**
    * Generate JWT token
@@ -31,7 +31,7 @@ export class AuthService {
   static generateToken(payload: AuthPayload): string {
     return jwt.sign(payload, this.JWT_SECRET, {
       expiresIn: this.JWT_EXPIRY,
-    });
+    } as SignOptions);
   }
 
   /**

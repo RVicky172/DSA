@@ -245,7 +245,7 @@ docker-compose up
 
 Create `backend/.env`:
 
-```env
+```bash
 # REQUIRED
 DATABASE_URL="postgresql://user:password@localhost:5432/dsa_learning"
 PORT=4000
@@ -329,11 +329,11 @@ npx prisma migrate dev
 ## Documentation Files
 
 - **TYPESCRIPT_MIGRATION.md** — Full TypeScript setup details and backend architecture
-- **DATABASE_SETUP.md** — Detailed database setup for PostgreSQL and Prisma
+- **DATABASE_SETUP.md** — PostgreSQL & Prisma setup guide (500+ lines)
 - **DOCKER.md** — Docker and containerization guide
 - **architecture.md** — Overall project architecture and roadmap
 - **INSTRUCTIONS.md** — Development conventions and best practices
-- **.github/copilot-instructions.md** — AI coding agent guidelines
+- **.github/copilot-instructions.md** — AI agent guidelines
 
 ## Key Files to Review
 
@@ -363,3 +363,4 @@ For detailed information:
 - Docker setup → See `docs/DOCKER.md`
 - Architecture → See `docs/architecture.md`
 - Backend patterns → See `docs/INSTRUCTIONS.md`
+

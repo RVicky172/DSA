@@ -22,7 +22,7 @@
 - ✅ `frontend/src/main.tsx` - Entry point converted
 - ✅ `frontend/src/App.tsx` - Root component with React.FC typing
 - ✅ `frontend/src/types/index.ts` - Frontend types and interfaces
-- ✅ `frontend/src/services/api.ts` - Typed API client service
+- ✅ `frontend/src/services/api.ts` - Typed API client
 - ✅ `frontend/.eslintrc.json` - ESLint configuration
 
 ### 4. Database & ORM
@@ -123,6 +123,7 @@ docker run -d -e POSTGRES_USER=dsa_user -e POSTGRES_PASSWORD=secure_password \
 ```
 
 ### 3. Configure Backend
+
 ```bash
 # Create .env file
 cat > backend/.env << EOF
@@ -140,6 +141,7 @@ npx prisma migrate dev --name init
 ```
 
 ### 4. Start Servers
+
 ```bash
 # Terminal 1: Backend
 cd backend
@@ -155,6 +157,7 @@ npx prisma studio
 ```
 
 ### 5. Test
+
 ```bash
 # Test API
 curl http://localhost:4000/api/health
@@ -200,177 +203,3 @@ docker run -p 4000:4000 dsa-app      # Run container
 docker-compose up                     # Run all services
 ```
 
-## 🏗️ Project Architecture
-
-### Backend Layers
-```
-Express Routes (in index.ts)
-    ↓
-Controllers (to be created)
-    ↓
-Services (business logic - to be created)
-    ↓
-Prisma Models (database queries)
-    ↓
-PostgreSQL
-```
-
-### Frontend Structure
-```
-App.tsx
-    ├── Components (to be created)
-    ├── Pages (to be created)
-    ├── Hooks (to be created)
-    ├── Context (to be created)
-    └── API Service (api.ts) → Backend
-```
-
-## 📋 Type System Overview
-
-### Backend Types (backend/src/types/index.ts)
-- `ApiResponse<T>` - Standard API response wrapper
-- `User`, `Lesson`, `Problem`, `TestCase` - Domain models
-- `JwtPayload`, `AuthResponse` - Authentication
-- `PaginationParams`, `PaginatedResponse` - Pagination
-
-### Frontend Types (frontend/src/types/index.ts)
-- `ApiResponse<T>` - API response typing
-- `Lesson`, `LessonsData` - Content models
-- `User`, `AuthContextType` - Authentication
-- `ProblemSolution` - Problem solving
-
-## 🎯 Next Implementation Steps
-
-### Phase 1: Authentication (1-2 days)
-- [ ] Install JWT library: `npm install jsonwebtoken bcryptjs` (backend)
-- [ ] Create `backend/src/controllers/authController.ts`
-- [ ] Implement signup/login endpoints
-- [ ] Create authentication routes
-- [ ] Update auth middleware
-
-### Phase 2: API Routes (2-3 days)
-- [ ] Create `backend/src/routes/` directory structure
-- [ ] Implement lesson endpoints
-- [ ] Implement problem endpoints
-- [ ] Add pagination and filtering
-- [ ] Error handling and validation
-
-### Phase 3: Services Layer (1-2 days)
-- [ ] Create `backend/src/services/userService.ts`
-- [ ] Create `backend/src/services/lessonService.ts`
-- [ ] Create `backend/src/services/problemService.ts`
-- [ ] Add business logic and validation
-
-### Phase 4: Frontend Components (3-5 days)
-- [ ] Create layout components (Header, Navigation, etc.)
-- [ ] Create page components (Home, Lessons, Problem, etc.)
-- [ ] Implement authentication context/hooks
-- [ ] Add routing with react-router
-
-### Phase 5: Problem Solver (3-5 days)
-- [ ] Integrate code editor (Monaco, CodeMirror)
-- [ ] Create code submission interface
-- [ ] Integrate external judge (Judge0)
-- [ ] Test case execution
-
-### Phase 6: Testing & Deployment (2-3 days)
-- [ ] Add unit tests (Jest for backend, Vitest for frontend)
-- [ ] Add integration tests
-- [ ] Set up GitHub Actions CI/CD
-- [ ] Deploy to production
-
-## ⚙️ Environment Setup Reference
-
-### backend/.env
-```env
-DATABASE_URL="postgresql://dsa_user:secure_password@localhost:5432/dsa_learning"
-PORT=4000
-NODE_ENV=development
-JWT_SECRET=dev_secret_key_change_in_production
-JWT_EXPIRY=24h
-CORS_ORIGIN=http://localhost:3000
-```
-
-### PostgreSQL Connection
-```
-postgresql://dsa_user:secure_password@localhost:5432/dsa_learning
-```
-
-### Key Endpoints
-```
-GET  /api/health                    # Health check
-GET  /api/lessons                   # List lessons
-GET  /api/lessons/:id               # Get lesson
-POST /api/auth/signup               # Register (to implement)
-POST /api/auth/login                # Login (to implement)
-```
-
-## 🐛 Troubleshooting
-
-### Backend Issues
-```bash
-# Check TypeScript compilation
-cd backend && npm run build
-
-# Test database connection
-npx ts-node src/testConnection.ts
-
-# Check port availability
-lsof -i :4000
-```
-
-### Frontend Issues
-```bash
-# Type checking
-npm run type-check
-
-# Clear cache
-rm -rf node_modules/.vite
-
-# Rebuild
-npm install
-npm run dev
-```
-
-### Database Issues
-```bash
-# Test PostgreSQL
-psql -U dsa_user -d dsa_learning
-
-# Reset migrations (dev only)
-npx prisma migrate reset
-
-# Check migrations
-npx prisma migrate status
-```
-
-## 📖 Learning Resources
-
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Express + TypeScript Guide](https://expressjs.com/)
-- [Prisma Documentation](https://www.prisma.io/docs/)
-- [React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
-- [Vite Documentation](https://vitejs.dev/)
-
-## ✨ Key Features of This Setup
-
-1. **Type-Safe** - Full TypeScript with strict mode enabled
-2. **Hot-Reload** - Automatic restart with ts-node and nodemon
-3. **Modern ORM** - Prisma with migrations and type generation
-4. **Scalable Structure** - Clear separation of concerns
-5. **Production-Ready** - Docker multi-stage builds
-6. **Well-Documented** - Comprehensive guides for each component
-7. **Developer-Friendly** - ESLint, Vite HMR, Prisma Studio
-
-## 📞 Support
-
-For detailed information, refer to:
-- Setup issues → `SETUP_TYPESCRIPT.md`
-- TypeScript details → `docs/TYPESCRIPT_MIGRATION.md`
-- Database help → `docs/DATABASE_SETUP.md`
-- Docker help → `DOCKER.md`
-- General architecture → `docs/architecture.md`
-
----
-
-**Ready to start?** See `SETUP_TYPESCRIPT.md` for the 5-step quick start guide!

@@ -1,4 +1,5 @@
 // prisma/seed.ts
+/* eslint-disable no-console */
 import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 
@@ -19,6 +20,7 @@ async function main() {
   console.log("👤 Creating users...");
   const hashedPassword = await bcrypt.hash("password123", 10);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const adminUser = await prisma.user.create({
     data: {
       email: "admin@example.com",
@@ -70,6 +72,7 @@ async function main() {
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const lesson2 = await prisma.lesson.create({
     data: {
       title: "Introduction to Linked Lists",
@@ -82,6 +85,7 @@ async function main() {
     },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const lesson3 = await prisma.lesson.create({
     data: {
       title: "Binary Search Trees",

@@ -134,7 +134,7 @@ Build a **production-ready, scalable platform** for learning data structures and
 ## 📋 Technical Debt & Maintenance
 
 - **Testing:** Add unit tests for all services (backend) and component tests (frontend)
-- **Documentation:** Keep docs/legacy/ in sync with code; update README on major changes
+- **Documentation:** Keep docs/guides/ in sync with code; update README on major changes
 - **Refactoring:** Modularize large components; extract reusable hooks
 - **Dependencies:** Monthly npm audit and security patches
 - **Performance:** Measure and optimize API response times and bundle size

@@ -43,7 +43,7 @@ backend/               Express API (port 4000)
 docs/
   ├── README.md       ← You are here
   ├── ENHANCEMENT_PLAN.md
-  └── legacy/         Archived detailed guides
+  └── guides/         In-depth setup & architecture guides
 package.json          Monorepo configuration
 ```
 
@@ -55,7 +55,7 @@ GET  /api/lessons               List lessons
 GET  /api/lessons/:id           Get lesson details
 ```
 
-See `legacy/BACKEND_ENHANCEMENT_GUIDE.md` for full API documentation.
+See `guides/BACKEND_ENHANCEMENT_GUIDE.md` for full API documentation.
 
 ## 🔧 Database Setup
 
@@ -96,10 +96,10 @@ CORS_ORIGIN=http://localhost:3000
 |----------|----------|------|
 | Quick Start | Everyone | This file ↑ |
 | Development Roadmap | Product Managers | `ENHANCEMENT_PLAN.md` |
-| Database Setup | Backend Devs | `legacy/DATABASE_SETUP.md` |
-| TypeScript Architecture | Full-Stack | `legacy/TYPESCRIPT_MIGRATION.md` |
-| API Design | Backend Devs | `legacy/BACKEND_ENHANCEMENT_GUIDE.md` |
-| React Patterns | Frontend Devs | `legacy/FRONTEND_API_SERVICE_GUIDE.md` |
+| Database Setup | Backend Devs | `guides/DATABASE_SETUP.md` |
+| TypeScript Architecture | Full-Stack | `guides/TYPESCRIPT_MIGRATION.md` |
+| API Design | Backend Devs | `guides/BACKEND_ENHANCEMENT_GUIDE.md` |
+| React Patterns | Frontend Devs | `guides/FRONTEND_API_SERVICE_GUIDE.md` |
 
 ## ⚠️ Common Issues
 
@@ -111,10 +111,10 @@ CORS_ORIGIN=http://localhost:3000
 
 ## 🔗 Quick Links
 
-- **Setup help?** → `docs/legacy/DATABASE_SETUP.md`
-- **Backend patterns?** → `docs/legacy/BACKEND_ENHANCEMENT_GUIDE.md`
-- **Frontend guide?** → `docs/legacy/FRONTEND_API_SERVICE_GUIDE.md`
-- **TypeScript setup?** → `docs/legacy/TYPESCRIPT_MIGRATION.md`
+- **Setup help?** → `docs/guides/DATABASE_SETUP.md`
+- **Backend patterns?** → `docs/guides/BACKEND_ENHANCEMENT_GUIDE.md`
+- **Frontend guide?** → `docs/guides/FRONTEND_API_SERVICE_GUIDE.md`
+- **TypeScript setup?** → `docs/guides/TYPESCRIPT_MIGRATION.md`
 - **Next features?** → `docs/ENHANCEMENT_PLAN.md`
 
 ---

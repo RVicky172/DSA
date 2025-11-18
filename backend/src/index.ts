@@ -23,7 +23,7 @@ const publicPath = path.join(__dirname, '..', 'public')
 app.use(express.static(publicPath))
 
 // Health check endpoint
-app.get('/api/health', (req: Request, res: Response) => {
+app.get('/api/health', (_req: Request, res: Response) => {
   const response: ApiResponse<{ ok: boolean }> = {
     success: true,
     data: { ok: true },
@@ -33,7 +33,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 })
 
 // Lessons endpoint (sample data - will be replaced with database queries)
-app.get('/api/lessons', (req: Request, res: Response) => {
+app.get('/api/lessons', (_req: Request, res: Response) => {
   const response: ApiResponse<typeof lessonsData> = {
     success: true,
     data: lessonsData,
@@ -59,7 +59,7 @@ app.get('/api/lessons/:id', (req: Request, res: Response) => {
     success: true,
     data: lesson,
   }
-  res.json(response)
+  return res.json(response)
 })
 
 // Sample data (will be replaced with database)
@@ -93,7 +93,8 @@ const lessonsData = {
 }
 
 // Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack)
 
   const response: ApiResponse<null> = {
@@ -112,8 +113,11 @@ app.get('*', (req: Request, res: Response) => {
 })
 
 // Start server
+// eslint-disable-next-line no-console
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`🚀 Backend server running on http://localhost:${PORT}`)
+  // eslint-disable-next-line no-console
   console.log(`📁 Serving static files from ${publicPath}`)
 })
 

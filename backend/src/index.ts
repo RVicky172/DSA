@@ -4,6 +4,8 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import { ApiResponse } from './types/index.js'
+import authRoutes from './routes/authRoutes.js'
+import lessonRoutes from './routes/lessonRoutes.js'
 
 dotenv.config()
 
@@ -32,65 +34,40 @@ app.get('/api/health', (_req: Request, res: Response) => {
   res.json(response)
 })
 
-// Lessons endpoint (sample data - will be replaced with database queries)
-app.get('/api/lessons', (_req: Request, res: Response) => {
-  const response: ApiResponse<typeof lessonsData> = {
-    success: true,
-    data: lessonsData,
-    message: 'Lessons retrieved successfully',
-  }
-  res.json(response)
-})
-
-// Get lesson by ID
-app.get('/api/lessons/:id', (req: Request, res: Response) => {
-  const { id } = req.params
-  const lesson = lessonsData.lessons.find((l) => l.id === parseInt(id))
-
-  if (!lesson) {
-    const response: ApiResponse<null> = {
-      success: false,
-      error: 'Lesson not found',
-    }
-    return res.status(404).json(response)
-  }
-
-  const response: ApiResponse<typeof lesson> = {
-    success: true,
-    data: lesson,
-  }
-  return res.json(response)
-})
+// Mount API routes
+app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/lessons', lessonRoutes)
 
 // Sample data (will be replaced with database)
-const lessonsData = {
-  lessons: [
-    {
-      id: 1,
-      title: 'Arrays',
-      difficulty: 'Easy' as const,
-      category: 'Data Structures',
-      description: 'Learn about arrays and their operations',
-      content: 'Arrays are fundamental data structures...',
-    },
-    {
-      id: 2,
-      title: 'Linked Lists',
-      difficulty: 'Medium' as const,
-      category: 'Data Structures',
-      description: 'Master linked list concepts',
-      content: 'Linked lists provide dynamic memory allocation...',
-    },
-    {
-      id: 3,
-      title: 'Trees',
-      difficulty: 'Hard' as const,
-      category: 'Data Structures',
-      description: 'Deep dive into tree structures',
-      content: 'Trees are hierarchical data structures...',
-    },
-  ],
-}
+// Note: This data is no longer used - lessons are now served from the database via /api/v1/lessons
+// const lessonsData = {
+//   lessons: [
+//     {
+//       id: 1,
+//       title: 'Arrays',
+//       difficulty: 'Easy' as const,
+//       category: 'Data Structures',
+//       description: 'Learn about arrays and their operations',
+//       content: 'Arrays are fundamental data structures...',
+//     },
+//     {
+//       id: 2,
+//       title: 'Linked Lists',
+//       difficulty: 'Medium' as const,
+//       category: 'Data Structures',
+//       description: 'Master linked list concepts',
+//       content: 'Linked lists provide dynamic memory allocation...',
+//     },
+//     {
+//       id: 3,
+//       title: 'Trees',
+//       difficulty: 'Hard' as const,
+//       category: 'Data Structures',
+//       description: 'Deep dive into tree structures',
+//       content: 'Trees are hierarchical data structures...',
+//     },
+//   ],
+// }
 
 // Error handling middleware
 // eslint-disable-next-line no-unused-vars

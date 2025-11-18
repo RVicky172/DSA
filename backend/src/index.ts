@@ -4,6 +4,9 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import { ApiResponse } from './types/index.js'
+import authRoutes from './routes/authRoutes.js'
+import lessonRoutes from './routes/lessonRoutes.js'
+import problemRoutes from './routes/problemRoutes.js'
 
 dotenv.config()
 
@@ -23,7 +26,7 @@ const publicPath = path.join(__dirname, '..', 'public')
 app.use(express.static(publicPath))
 
 // Health check endpoint
-app.get('/api/health', (req: Request, res: Response) => {
+app.get('/api/health', (_req: Request, res: Response) => {
   const response: ApiResponse<{ ok: boolean }> = {
     success: true,
     data: { ok: true },
@@ -32,68 +35,45 @@ app.get('/api/health', (req: Request, res: Response) => {
   res.json(response)
 })
 
-// Lessons endpoint (sample data - will be replaced with database queries)
-app.get('/api/lessons', (req: Request, res: Response) => {
-  const response: ApiResponse<typeof lessonsData> = {
-    success: true,
-    data: lessonsData,
-    message: 'Lessons retrieved successfully',
-  }
-  res.json(response)
-})
-
-// Get lesson by ID
-app.get('/api/lessons/:id', (req: Request, res: Response) => {
-  const { id } = req.params
-  const lesson = lessonsData.lessons.find((l) => l.id === parseInt(id))
-
-  if (!lesson) {
-    const response: ApiResponse<null> = {
-      success: false,
-      error: 'Lesson not found',
-    }
-    return res.status(404).json(response)
-  }
-
-  const response: ApiResponse<typeof lesson> = {
-    success: true,
-    data: lesson,
-  }
-  res.json(response)
-})
+// Mount API routes
+app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/lessons', lessonRoutes)
+app.use('/api/v1/problems', problemRoutes)
 
 // Sample data (will be replaced with database)
-const lessonsData = {
-  lessons: [
-    {
-      id: 1,
-      title: 'Arrays',
-      difficulty: 'Easy' as const,
-      category: 'Data Structures',
-      description: 'Learn about arrays and their operations',
-      content: 'Arrays are fundamental data structures...',
-    },
-    {
-      id: 2,
-      title: 'Linked Lists',
-      difficulty: 'Medium' as const,
-      category: 'Data Structures',
-      description: 'Master linked list concepts',
-      content: 'Linked lists provide dynamic memory allocation...',
-    },
-    {
-      id: 3,
-      title: 'Trees',
-      difficulty: 'Hard' as const,
-      category: 'Data Structures',
-      description: 'Deep dive into tree structures',
-      content: 'Trees are hierarchical data structures...',
-    },
-  ],
-}
+// Note: This data is no longer used - lessons are now served from the database via /api/v1/lessons
+// const lessonsData = {
+//   lessons: [
+//     {
+//       id: 1,
+//       title: 'Arrays',
+//       difficulty: 'Easy' as const,
+//       category: 'Data Structures',
+//       description: 'Learn about arrays and their operations',
+//       content: 'Arrays are fundamental data structures...',
+//     },
+//     {
+//       id: 2,
+//       title: 'Linked Lists',
+//       difficulty: 'Medium' as const,
+//       category: 'Data Structures',
+//       description: 'Master linked list concepts',
+//       content: 'Linked lists provide dynamic memory allocation...',
+//     },
+//     {
+//       id: 3,
+//       title: 'Trees',
+//       difficulty: 'Hard' as const,
+//       category: 'Data Structures',
+//       description: 'Deep dive into tree structures',
+//       content: 'Trees are hierarchical data structures...',
+//     },
+//   ],
+// }
 
 // Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack)
 
   const response: ApiResponse<null> = {
@@ -112,8 +92,11 @@ app.get('*', (req: Request, res: Response) => {
 })
 
 // Start server
+// eslint-disable-next-line no-console
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`🚀 Backend server running on http://localhost:${PORT}`)
+  // eslint-disable-next-line no-console
   console.log(`📁 Serving static files from ${publicPath}`)
 })
 

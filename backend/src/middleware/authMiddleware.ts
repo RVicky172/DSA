@@ -5,6 +5,7 @@
 import { Request, Response, NextFunction } from 'express'
 import type { JwtPayload } from '../types/index.js'
 import { AppError } from './errorHandler.js'
+import { AuthService } from '../services/authService.js'
 
 export interface AuthRequest extends Request {
   user?: JwtPayload
@@ -12,11 +13,10 @@ export interface AuthRequest extends Request {
 
 /**
  * Verify JWT token middleware
- * TODO: Implement JWT verification when auth is set up
  */
 export const verifyToken = (
   req: AuthRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
   try {
@@ -26,9 +26,13 @@ export const verifyToken = (
       throw new AppError('No token provided', 401)
     }
 
-    // TODO: Verify token and set req.user
-    // const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    // req.user = decoded as JwtPayload;
+    const decoded = AuthService.verifyToken(token)
+    
+    if (!decoded) {
+      throw new AppError('Invalid or expired token', 401)
+    }
+
+    req.user = decoded as JwtPayload
 
     next()
   } catch (error) {
@@ -41,10 +45,10 @@ export const verifyToken = (
  */
 export const isAdmin = (
   req: AuthRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
-  if (req.user?.role !== 'admin') {
+  if (req.user?.role !== 'ADMIN') {
     return next(new AppError('Unauthorized: Admin access required', 403))
   }
   next()
@@ -55,10 +59,10 @@ export const isAdmin = (
  */
 export const isInstructor = (
   req: AuthRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
-  if (!['instructor', 'admin'].includes(req.user?.role || '')) {
+  if (!['INSTRUCTOR', 'ADMIN'].includes(req.user?.role || '')) {
     return next(
       new AppError('Unauthorized: Instructor access required', 403)
     )

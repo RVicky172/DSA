@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -15,11 +15,12 @@ model User {
   email     String   @unique
   username  String   @unique
   password  String   // Should be hashed with bcrypt
-  role      UserRole @default(STUDENT)
+  role      String   @default("STUDENT")  // STUDENT, INSTRUCTOR, ADMIN
 
   // Relations
-  lessonsAuthor  Lesson[]
-  submissions    Submission[]
+  lessons     Lesson[]       @relation("LessonAuthor")
+  submissions Submission[]
+  progress    UserProgress?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -32,7 +33,7 @@ model Lesson {
   id          String   @id @default(cuid())
   title       String
   description String
-  difficulty  Difficulty
+  difficulty  String   // EASY, MEDIUM, HARD
   category    String
   content     String   // Markdown content
 
@@ -40,13 +41,13 @@ model Lesson {
   author      User     @relation("LessonAuthor", fields: [authorId], references: [id], onDelete: Cascade)
   authorId    String
   problems    Problem[]
-  userProgress UserProgress[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([authorId])
   @@index([category])
+  @@index([difficulty])
   @@map("lessons")
 }
 
@@ -54,7 +55,7 @@ model Problem {
   id          String   @id @default(cuid())
   title       String
   description String
-  difficulty  Difficulty
+  difficulty  String   // EASY, MEDIUM, HARD
   initialCode String
   language    String   @default("javascript")
 
@@ -91,7 +92,7 @@ model Submission {
   id        String   @id @default(cuid())
   code      String
   language  String   @default("javascript")
-  status    SubmissionStatus @default(PENDING)
+  status    String   @default("PENDING")  // PENDING, ACCEPTED, WRONG_ANSWER, etc.
   result    String?  // JSON stringified result
   score     Int      @default(0)
 
@@ -111,38 +112,26 @@ model Submission {
 }
 
 model UserProgress {
-  id        String   @id @default(cuid())
-  lessonsCompleted Int @default(0)
-  problemsSolved   Int @default(0)
-  totalScore       Int @default(0)
+  id               String   @id @default(cuid())
+  lessonsStarted   Int      @default(0)
+  lessonsCompleted Int      @default(0)
+  problemsAttempted Int     @default(0)
+  problemsSolved   Int      @default(0)
+  totalScore       Int      @default(0)
 
   // Relations
-  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  lessonId  String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([userId])
   @@map("user_progress")
 }
 
-enum UserRole {
-  STUDENT
-  INSTRUCTOR
-  ADMIN
-}
-
-enum Difficulty {
-  EASY
-  MEDIUM
-  HARD
-}
-
-enum SubmissionStatus {
-  PENDING
-  ACCEPTED
-  WRONG_ANSWER
-  TIME_LIMIT_EXCEEDED
-  RUNTIME_ERROR
-  COMPILATION_ERROR
-}
+// Note: Using strings for enums due to SQLite limitations
+// Supported values:
+// UserRole: STUDENT, INSTRUCTOR, ADMIN
+// Difficulty: EASY, MEDIUM, HARD  
+// SubmissionStatus: PENDING, ACCEPTED, WRONG_ANSWER, TIME_LIMIT_EXCEEDED, RUNTIME_ERROR, COMPILATION_ERROR

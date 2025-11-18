@@ -4,14 +4,14 @@ Data Structures and Algorithms online learning platform built with **TypeScript*
 
 ## 🚀 Quick Start
 
-See **[SETUP_TYPESCRIPT.md](./SETUP_TYPESCRIPT.md)** for the complete 5-step setup guide (20 minutes).
+See **[docs/guides/SETUP_TYPESCRIPT.md](./docs/guides/SETUP_TYPESCRIPT.md)** for the complete 5-step setup guide (20 minutes).
 
 ```bash
 # 1. Install all dependencies
 npm run install:all
 
 # 2. Set up PostgreSQL database
-# See SETUP_TYPESCRIPT.md for detailed steps
+# See docs/guides/SETUP_TYPESCRIPT.md for detailed steps
 
 # 3. Start backend (Terminal 1)
 cd backend && npm run dev
@@ -22,22 +22,47 @@ cd frontend && npm run dev
 # 5. Open browser to http://localhost:3000
 ```
 
+## 📚 Documentation Structure
+
+All documentation is organized for easy navigation. **[Read the documentation management guide](./docs/DOCUMENTATION_MANAGEMENT.md)** to understand the structure.
+
+### 🔗 Quick Links
+
+**Setup & Getting Started:**
+- **[docs/guides/SETUP_TYPESCRIPT.md](./docs/guides/SETUP_TYPESCRIPT.md)** ⭐ Full setup guide (Start here!)
+- **[docs/guides/DATABASE_SETUP.md](./docs/guides/DATABASE_SETUP.md)** - Database configuration
+- **[docs/guides/architecture.md](./docs/guides/architecture.md)** - System architecture
+
+**API Documentation:**
+- **[Interactive Swagger UI](http://localhost:4000/api/docs)** - Test APIs in browser
+- **[docs/api/API_DEVELOPMENT_GUIDE.md](./docs/api/API_DEVELOPMENT_GUIDE.md)** - Complete API reference
+- **[docs/api/openapi.yaml](./docs/api/openapi.yaml)** - OpenAPI 3.0 specification
+
+**Documentation Management:**
+- **[docs/DOCUMENTATION_MANAGEMENT.md](./docs/DOCUMENTATION_MANAGEMENT.md)** - How docs are organized
+- **[progress/CURRENT.md](./progress/CURRENT.md)** - Today's progress
+- **[progress/README.md](./progress/README.md)** - Daily progress tracking
+
+**Other Resources:**
+- **[DOCKER.md](./DOCKER.md)** - Docker setup
+- **[docs/guides/INSTRUCTIONS.md](./docs/guides/INSTRUCTIONS.md)** - Development instructions
+
 ## 📚 Project Documentation
 
 **For TypeScript Setup & Backend Architecture:**
-- **[SETUP_TYPESCRIPT.md](./SETUP_TYPESCRIPT.md)** ⭐ **Start here for full setup**
+- **[SETUP_TYPESCRIPT.md](./docs/guides/SETUP_TYPESCRIPT.md)** ⭐ **Start here for full setup**
   - 5-step quick start guide
   - Environment setup
   - Troubleshooting
 
-- **[docs/TYPESCRIPT_MIGRATION.md](./docs/TYPESCRIPT_MIGRATION.md)**
+- **[docs/TYPESCRIPT_MIGRATION.md](./docs/migration/TYPESCRIPT_MIGRATION.md)**
   - Complete TypeScript configuration
   - Backend architecture details
   - Type-safe patterns
   - Frontend structure
 
 **For Database Setup:**
-- **[docs/DATABASE_SETUP.md](./docs/DATABASE_SETUP.md)**
+- **[docs/DATABASE_SETUP.md](./docs/migration/DATABASE_SETUP.md)**
   - PostgreSQL installation
   - Prisma ORM setup
   - Migration workflows
@@ -50,12 +75,12 @@ cd frontend && npm run dev
   - Multi-stage builds for TypeScript
 
 **For General Architecture:**
-- **[docs/architecture.md](./docs/architecture.md)**
+- **[docs/architecture.md](./docs/guides/architecture.md)**
   - Project overview and design decisions
   - Roadmap and next steps
 
 **For Development:**
-- **[docs/INSTRUCTIONS.md](./docs/INSTRUCTIONS.md)**
+- **[docs/INSTRUCTIONS.md](./docs/guides/INSTRUCTIONS.md)**
   - Coding conventions
   - Frontend/backend patterns
   - PR checklist

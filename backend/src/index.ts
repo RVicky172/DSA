@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import { ApiResponse } from './types/index.js'
 import authRoutes from './routes/authRoutes.js'
 import lessonRoutes from './routes/lessonRoutes.js'
+import problemRoutes from './routes/problemRoutes.js'
 
 dotenv.config()
 
@@ -37,6 +38,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
 // Mount API routes
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/lessons', lessonRoutes)
+app.use('/api/v1/problems', problemRoutes)
 
 // Sample data (will be replaced with database)
 // Note: This data is no longer used - lessons are now served from the database via /api/v1/lessons

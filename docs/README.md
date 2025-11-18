@@ -102,6 +102,40 @@ CORS_ORIGIN=http://localhost:3000
 | TypeScript Architecture | Full-Stack | `guides/TYPESCRIPT_MIGRATION.md` |
 | API Design | Backend Devs | `guides/BACKEND_ENHANCEMENT_GUIDE.md` |
 | React Patterns | Frontend Devs | `guides/FRONTEND_API_SERVICE_GUIDE.md` |
+| **API Documentation** ⭐ NEW | All Devs | `API_DEVELOPMENT_GUIDE.md` |
+| **OpenAPI Specification** ⭐ NEW | All Devs | `openapi.yaml` |
+| **Swagger Integration** ⭐ NEW | All Devs | `SWAGGER_INTEGRATION_SUMMARY.md` |
+
+## 🔌 API Documentation (NEW!)
+
+### Access Swagger UI
+```bash
+npm run start:backend
+# Open: http://localhost:4000/api/docs
+```
+
+### 18 Documented Endpoints
+- ✅ Authentication (signup, login, me)
+- ✅ Lessons (GET, POST, PUT, DELETE with pagination)
+- ✅ Problems (GET, POST, PUT, DELETE with filtering)
+- ✅ Health check
+
+### Documentation Files
+| Document | Purpose | Audience |
+|----------|---------|----------|
+| `openapi.yaml` | Complete OpenAPI 3.0 spec | API users |
+| `API_DEVELOPMENT_GUIDE.md` | Architecture & roadmap | All developers |
+| `SWAGGER_INTEGRATION_SUMMARY.md` | Quick reference | Testing & integration |
+
+### Key Features
+- Interactive Swagger UI at `/api/docs`
+- Complete request/response schemas
+- JWT authentication examples
+- Role-based access control
+- Query parameter documentation
+- Future API roadmap (Phases 1-4)
+
+**Prisma Schema Status:** ✅ All 6 models present (no migrations needed)
 
 ## ⚠️ Common Issues
 

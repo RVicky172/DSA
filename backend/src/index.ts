@@ -3,6 +3,8 @@ import cors from 'cors'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
+import swaggerUi from 'swagger-ui-express'
+import openapiSpec from './config/swagger.js'
 import { ApiResponse } from './types/index.js'
 import authRoutes from './routes/authRoutes.js'
 import lessonRoutes from './routes/lessonRoutes.js'
@@ -24,6 +26,10 @@ app.use(express.urlencoded({ extended: true }))
 // Serve static frontend in production
 const publicPath = path.join(__dirname, '..', 'public')
 app.use(express.static(publicPath))
+
+// Swagger UI documentation
+app.use('/api/docs', swaggerUi.serve)
+app.get('/api/docs', swaggerUi.setup(openapiSpec, { swaggerOptions: { url: '/openapi.yaml' } }))
 
 // Health check endpoint
 app.get('/api/health', (_req: Request, res: Response) => {

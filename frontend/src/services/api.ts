@@ -10,7 +10,7 @@ import type {
   User,
 } from '../types/index.js'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000'
+const API_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:4000'
 
 /**
  * Generic fetch wrapper with error handling and typing
@@ -21,9 +21,13 @@ async function apiCall<T>(
 ): Promise<T> {
   const url = `${API_URL}${endpoint}`
 
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...options.headers,
+    ...(typeof options.headers === 'object' && options.headers !== null
+      ? Object.fromEntries(
+          Object.entries(options.headers).map(([k, v]) => [k, String(v)])
+        )
+      : {}),
   }
 
   // Add auth token if available

@@ -1,13 +1,14 @@
-/* Header Component Styles */
+/* Header Styling */
 
 .app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1rem 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   position: sticky;
   top: 0;
   z-index: 100;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .header-container {
@@ -19,66 +20,93 @@
   align-items: center;
 }
 
+.header-logo {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.header-logo:hover {
+  transform: scale(1.05);
+}
+
 .header-logo h1 {
-  margin: 0;
   font-size: 1.5rem;
-  font-weight: 700;
+  margin: 0;
+  color: white;
+  background: linear-gradient(135deg, #00d4ff, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
 .header-nav {
   display: flex;
-  gap: 1rem;
   align-items: center;
+  gap: 1.5rem;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-name {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .auth-buttons {
   display: flex;
   gap: 1rem;
-}
-
-.auth-buttons .btn-secondary {
-  border-color: white;
-  color: white;
-}
-
-.auth-buttons .btn-secondary:hover {
-  background: white;
-  color: #667eea;
-}
-
-.auth-buttons .btn-primary {
-  background: white;
-  color: #667eea;
-}
-
-.auth-buttons .btn-primary:hover {
-  background: #f0f0f0;
-}
-
-.user-menu {
-  display: flex;
-  gap: 1rem;
   align-items: center;
 }
 
-.user-name {
-  font-weight: 500;
+.btn-primary,
+.btn-secondary {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.user-menu .btn-secondary {
-  border-color: white;
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.user-menu .btn-secondary:hover {
-  background: white;
-  color: #667eea;
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
-/* Responsive Design */
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .header-container {
-    flex-direction: column;
+    padding: 0 1rem;
+    flex-wrap: wrap;
     gap: 1rem;
   }
 
@@ -88,16 +116,60 @@
 
   .header-nav {
     width: 100%;
-    justify-content: center;
-  }
-
-  .auth-buttons {
-    width: 100%;
-    justify-content: space-between;
+    gap: 0.75rem;
   }
 
   .user-menu {
-    width: 100%;
+    flex: 1;
     justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .auth-buttons {
+    flex: 1;
+    gap: 0.5rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.45rem 1rem;
+    font-size: 0.9rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .user-name {
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-container {
+    padding: 0 0.75rem;
+  }
+
+  .header-logo h1 {
+    font-size: 1.1rem;
+  }
+
+  .header-nav {
+    width: 100%;
+  }
+
+  .user-menu,
+  .auth-buttons {
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .user-name {
+    display: none;
   }
 }

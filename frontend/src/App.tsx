@@ -1,6 +1,9 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import { ToastProvider } from './context/ToastContext'
+import { ErrorBoundary } from './components/ErrorBoundary'
+import { ToastContainer } from './components/ToastContainer'
 import { Header } from './components/Header'
 import { PrivateRoute } from './components/PrivateRoute'
 import { HomePage } from './pages/HomePage'
@@ -42,12 +45,17 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </Router>
+    <ErrorBoundary>
+      <ToastProvider>
+        <Router>
+          <AuthProvider>
+            <AppContent />
+            <ToastContainer />
+          </AuthProvider>
+        </Router>
+      </ToastProvider>
+    </ErrorBoundary>
   )
 }
 
-export default App
+export default App;

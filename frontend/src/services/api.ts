@@ -51,10 +51,19 @@ async function apiCall<T>(
 
     console.log(`📥 Response status: ${response.status}`)
 
+    // Handle network errors
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error(`❌ HTTP error! status: ${response.status}, body: ${errorText}`)
-      throw new Error(`HTTP error! status: ${response.status}`)
+      let errorMessage = 'Request failed'
+      
+      try {
+        const errorData: ApiResponse<null> = await response.json()
+        errorMessage = errorData.error || `HTTP ${response.status}: ${response.statusText}`
+      } catch {
+        errorMessage = `HTTP ${response.status}: ${response.statusText}`
+      }
+
+      console.error(`❌ HTTP error! status: ${response.status}, message: ${errorMessage}`)
+      throw new Error(errorMessage)
     }
 
     const data: ApiResponse<T> = await response.json()
@@ -62,15 +71,17 @@ async function apiCall<T>(
     console.log('✅ Response received:', data)
 
     if (!data.success) {
-      console.error('❌ API returned error:', data.error)
-      throw new Error(data.error || 'Request failed')
+      const error = data.error || 'Request failed'
+      console.error('❌ API returned error:', error)
+      throw new Error(error)
     }
 
     console.log('✓ API call successful')
     return data.data as T
   } catch (error) {
-    console.error(`❌ API call failed for ${endpoint}:`, error)
-    throw error
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
+    console.error(`❌ API call failed for ${endpoint}:`, errorMessage)
+    throw new Error(errorMessage)
   }
 }
 

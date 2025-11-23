@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiService from '../services/api'
+import { useToast } from '../context/ToastContext'
 import type { LessonsData } from '../types/index'
 import '../styles/lessons-page.css'
 
 export const LessonsPage: React.FC = () => {
   const navigate = useNavigate()
+  const { addToast } = useToast()
   const [lessons, setLessons] = useState<LessonsData | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
   const [filterCategory, setFilterCategory] = useState<string>('all')
   const [filterDifficulty, setFilterDifficulty] = useState<string>('all')
 
@@ -16,20 +17,19 @@ export const LessonsPage: React.FC = () => {
     const fetchLessons = async (): Promise<void> => {
       try {
         setLoading(true)
-        setError(null)
         const data = await apiService.getLessons()
         setLessons(data)
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to fetch lessons'
-        setError(errorMessage)
         console.error('Error fetching lessons:', err)
+        addToast(errorMessage, 'error')
       } finally {
         setLoading(false)
       }
     }
 
     fetchLessons()
-  }, [])
+  }, [addToast])
 
   const getFilteredLessons = () => {
     if (!lessons) return []
@@ -39,6 +39,10 @@ export const LessonsPage: React.FC = () => {
       const difficultyMatch = filterDifficulty === 'all' || lesson.difficulty.toLowerCase() === filterDifficulty
       return categoryMatch && difficultyMatch
     })
+  }
+
+  const handleLessonClick = (lessonId: number): void => {
+    navigate(`/lessons/${lessonId}`)
   }
 
   const filteredLessons = getFilteredLessons()
@@ -53,9 +57,14 @@ export const LessonsPage: React.FC = () => {
       </div>
 
       {loading ? (
-        <div className="loading">Loading lessons...</div>
-      ) : error ? (
-        <div className="error">Error: {error}</div>
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <p>Loading lessons...</p>
+        </div>
+      ) : !lessons || lessons.lessons.length === 0 ? (
+        <div className="empty-state">
+          <p>No lessons available yet. Check back soon!</p>
+        </div>
       ) : (
         <>
           <div className="filters">
@@ -98,11 +107,11 @@ export const LessonsPage: React.FC = () => {
                 <div 
                   key={lesson.id} 
                   className="lesson-card"
-                  onClick={() => navigate(`/lessons/${lesson.id}`)}
+                  onClick={() => handleLessonClick(lesson.id)}
                   role="button"
                   tabIndex={0}
                   onKeyPress={(e) => {
-                    if (e.key === 'Enter') navigate(`/lessons/${lesson.id}`)
+                    if (e.key === 'Enter') handleLessonClick(lesson.id)
                   }}
                 >
                   <h3>{lesson.title}</h3>

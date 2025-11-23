@@ -1,5 +1,9 @@
 /* DSA Learning Platform - Futuristic Theme */
 
+/* Import common styles */
+@import './styles/common.css';
+@import './styles/toast.css';
+
 :root {
   /* Colors */
   --bg-primary: #0f172a;

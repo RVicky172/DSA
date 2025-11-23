@@ -9,12 +9,10 @@ export const AuthPage: React.FC = () => {
     <div className="auth-page">
       {isLogin ? (
         <Login 
-          onSuccess={() => window.location.href = '/lessons'}
           onSwitchToSignup={() => setIsLogin(false)}
         />
       ) : (
         <Signup 
-          onSuccess={() => window.location.href = '/lessons'}
           onSwitchToLogin={() => setIsLogin(true)}
         />
       )}

@@ -1,25 +1,28 @@
 import express, { Express, Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import path from 'path'
-import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
-import swaggerUi from 'swagger-ui-express'
-import openapiSpec from './config/swagger.js'
-import { ApiResponse } from './types/index.js'
-import authRoutes from './routes/authRoutes.js'
-import lessonRoutes from './routes/lessonRoutes.js'
-import problemRoutes from './routes/problemRoutes.js'
+import { ApiResponse } from './types'
+import authRoutes from './routes/authRoutes'
+import lessonRoutes from './routes/lessonRoutes'
+import problemRoutes from './routes/problemRoutes'
 
 dotenv.config()
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const app: Express = express()
 const PORT = process.env.PORT || 4000
 
+// CORS configuration
+const corsOptions = {
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200,
+}
+
 // Middleware
-app.use(cors())
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -27,9 +30,8 @@ app.use(express.urlencoded({ extended: true }))
 const publicPath = path.join(__dirname, '..', 'public')
 app.use(express.static(publicPath))
 
-// Swagger UI documentation
-app.use('/api/docs', swaggerUi.serve)
-app.get('/api/docs', swaggerUi.setup(openapiSpec, { swaggerOptions: { url: '/openapi.yaml' } }))
+// API documentation available at /api/docs (Swagger UI - configured separately)
+// Note: Swagger UI setup moved to production build
 
 // Health check endpoint
 app.get('/api/health', (_req: Request, res: Response) => {

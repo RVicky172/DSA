@@ -3,9 +3,9 @@
  */
 
 import { Request, Response, NextFunction } from 'express'
-import type { JwtPayload } from '../types/index.js'
-import { AppError } from './errorHandler.js'
-import { AuthService } from '../services/authService.js'
+import type { JwtPayload } from '../types'
+import { AppError } from './errorHandler'
+import { AuthService } from '../services/authService'
 
 export interface AuthRequest extends Request {
   user?: JwtPayload

@@ -1,8 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express'
-import { lessonService, CreateLessonInput, UpdateLessonInput } from '../services/lessonService.js'
-import { verifyToken, isInstructor, isAdmin } from '../middleware/authMiddleware.js'
-import type { ApiResponse } from '../types/index.js'
-import type { AuthRequest } from '../middleware/authMiddleware.js'
+import { lessonService, CreateLessonInput, UpdateLessonInput } from '../services/lessonService'
+import { verifyToken, isInstructor, isAdmin } from '../middleware/authMiddleware'
+import type { ApiResponse } from '../types'
+import type { AuthRequest } from '../middleware/authMiddleware'
 
 const router = Router()
 

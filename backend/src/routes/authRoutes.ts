@@ -1,8 +1,8 @@
 // backend/src/routes/authRoutes.ts
 import { Router, Request, Response, NextFunction } from 'express'
-import { AuthService } from '../services/authService.js'
-import { AppError } from '../middleware/errorHandler.js'
-import { verifyToken, AuthRequest } from '../middleware/authMiddleware.js'
+import { AuthService } from '../services/authService'
+import { AppError } from '../middleware/errorHandler'
+import { verifyToken, AuthRequest } from '../middleware/authMiddleware'
 
 const router = Router()
 

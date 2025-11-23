@@ -1,65 +1,52 @@
-import React, { useState, useEffect } from 'react'
-import apiService from './services/api.js'
-import type { LessonsData } from './types/index.js'
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext'
+import { Header } from './components/Header'
+import { PrivateRoute } from './components/PrivateRoute'
+import { HomePage } from './pages/HomePage'
+import { AuthPage } from './pages/AuthPage'
+import { LessonsPage } from './pages/LessonsPage'
+import { LessonDetailPage } from './pages/LessonDetailPage'
+import { NotFoundPage } from './pages/NotFoundPage'
 import './styles.css'
 
-const App: React.FC = () => {
-  const [lessons, setLessons] = useState<LessonsData | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchLessons = async (): Promise<void> => {
-      try {
-        setLoading(true)
-        const data = await apiService.getLessons()
-        setLessons(data)
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to fetch lessons'
-        setError(errorMessage)
-        console.error('Error fetching lessons:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchLessons()
-  }, [])
-
+const AppContent: React.FC = () => {
   return (
-    <div className="app">
-      <header className="header">
-        <h1>📚 DSA Learning Platform</h1>
-        <p>Master Data Structures and Algorithms</p>
-      </header>
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route
+          path="/lessons"
+          element={
+            <PrivateRoute>
+              <LessonsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/lessons/:id"
+          element={
+            <PrivateRoute>
+              <LessonDetailPage />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/404" element={<NotFoundPage />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
+      </Routes>
+    </>
+  )
+}
 
-      <main className="main-content">
-        {loading ? (
-          <div className="loading">Loading lessons...</div>
-        ) : error ? (
-          <div className="error">Error: {error}</div>
-        ) : lessons ? (
-          <div className="lessons-grid">
-            <h2>Available Lessons</h2>
-            <div className="lessons-list">
-              {lessons.lessons.map((lesson) => (
-                <div key={lesson.id} className="lesson-card">
-                  <h3>{lesson.title}</h3>
-                  <p>{lesson.description}</p>
-                  <span className={`difficulty ${lesson.difficulty.toLowerCase()}`}>
-                    {lesson.difficulty}
-                  </span>
-                  <span className="category">{lesson.category}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div>No lessons available</div>
-        )}
-      </main>
-    </div>
+const App: React.FC = () => {
+  return (
+    <Router>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Router>
   )
 }
 

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import apiService from '../services/api.js'
-import type { AuthContextType, User } from '../types/index.js'
+import apiService from '../services/api'
+import type { AuthContextType, User } from '../types/index'
 
 /**
  * AuthContext provides authentication state and methods

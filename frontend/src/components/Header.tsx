@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAuth } from '../context/AuthContext.js'
+import { useAuth } from '../context/AuthContext'
 import '../styles/header.css'
 
 interface HeaderProps {

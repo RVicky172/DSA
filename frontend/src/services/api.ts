@@ -8,9 +8,11 @@ import type {
   Lesson,
   LessonsData,
   User,
-} from '../types/index.js'
+} from '../types/index'
 
 const API_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:4000'
+
+console.log('🔌 API_URL configured as:', API_URL)
 
 /**
  * Generic fetch wrapper with error handling and typing
@@ -20,6 +22,8 @@ async function apiCall<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const url = `${API_URL}${endpoint}`
+  
+  console.log(`📡 API Call: ${options.method || 'GET'} ${url}`)
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -34,27 +38,38 @@ async function apiCall<T>(
   const token = localStorage.getItem('authToken')
   if (token) {
     headers.Authorization = `Bearer ${token}`
+    console.log('✓ Authorization token added')
   }
 
   try {
+    console.log('📤 Sending request with headers:', headers)
+    
     const response = await fetch(url, {
       ...options,
       headers,
     })
 
+    console.log(`📥 Response status: ${response.status}`)
+
     if (!response.ok) {
+      const errorText = await response.text()
+      console.error(`❌ HTTP error! status: ${response.status}, body: ${errorText}`)
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
     const data: ApiResponse<T> = await response.json()
+    
+    console.log('✅ Response received:', data)
 
     if (!data.success) {
+      console.error('❌ API returned error:', data.error)
       throw new Error(data.error || 'Request failed')
     }
 
+    console.log('✓ API call successful')
     return data.data as T
   } catch (error) {
-    console.error(`API call failed for ${endpoint}:`, error)
+    console.error(`❌ API call failed for ${endpoint}:`, error)
     throw error
   }
 }
@@ -63,31 +78,38 @@ async function apiCall<T>(
  * Health check endpoint
  */
 export async function checkHealth(): Promise<{ ok: boolean }> {
-  return apiCall('/api/health')
+  try {
+    const response = await fetch(`${API_URL}/api/health`)
+    const data = await response.json()
+    return data.data || { ok: response.ok }
+  } catch (error) {
+    console.error('Health check failed:', error)
+    throw error
+  }
 }
 
 /**
  * Get all lessons
  */
 export async function getLessons(): Promise<LessonsData> {
-  return apiCall('/api/lessons')
+  return apiCall('/api/v1/lessons')
 }
 
 /**
  * Get single lesson by ID
  */
 export async function getLessonById(id: number): Promise<Lesson> {
-  return apiCall(`/api/lessons/${id}`)
+  return apiCall(`/api/v1/lessons/${id}`)
 }
 
 /**
- * Authentication endpoints (to be implemented)
+ * Authentication endpoints
  */
 export async function login(
   email: string,
   password: string
 ): Promise<{ token: string; user: User }> {
-  return apiCall('/api/auth/login', {
+  return apiCall('/api/v1/auth/login', {
     method: 'POST',
     body: JSON.stringify({ email, password }),
   })
@@ -98,7 +120,7 @@ export async function signup(
   username: string,
   password: string
 ): Promise<{ token: string; user: User }> {
-  return apiCall('/api/auth/signup', {
+  return apiCall('/api/v1/auth/signup', {
     method: 'POST',
     body: JSON.stringify({ email, username, password }),
   })
@@ -113,16 +135,16 @@ export async function logout(): Promise<void> {
  * Get current user info
  */
 export async function getCurrentUser(): Promise<User> {
-  return apiCall('/api/auth/me')
+  return apiCall('/api/v1/auth/me')
 }
 
 /**
- * Problem endpoints (to be implemented)
+ * Problem endpoints
  */
 export async function getProblemsByLessonId(
   lessonId: number
 ): Promise<Array<{ id: number; title: string }>> {
-  return apiCall(`/api/lessons/${lessonId}/problems`)
+  return apiCall(`/api/v1/lessons/${lessonId}/problems`)
 }
 
 export async function submitSolution(
@@ -130,7 +152,7 @@ export async function submitSolution(
   code: string,
   language: string
 ): Promise<{ passed: boolean; output: string }> {
-  return apiCall('/api/problems/submit', {
+  return apiCall('/api/v1/problems/submit', {
     method: 'POST',
     body: JSON.stringify({ problemId, code, language }),
   })

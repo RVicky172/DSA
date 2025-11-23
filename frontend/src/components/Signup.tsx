@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useAuth } from '../context/AuthContext.js'
+import { useAuth } from '../context/AuthContext'
 import '../styles/auth.css'
 
 interface SignupProps {
@@ -35,7 +35,11 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
         throw new Error('Passwords do not match')
       }
 
+      console.log('📝 Attempting signup with email:', email, 'username:', username)
+      
       await signup(email, username, password)
+      
+      console.log('✅ Signup successful!')
       
       // Reset form
       setEmail('')
@@ -47,8 +51,8 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
       onSuccess?.()
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Signup failed'
+      console.error('❌ Signup error:', errorMessage, err)
       setError(errorMessage)
-      console.error('Signup error:', err)
     } finally {
       setLoading(false)
     }

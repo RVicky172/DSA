@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import apiService from '../services/api.js'
-import type { Lesson } from '../types/index.js'
+import apiService from '../services/api'
+import type { Lesson } from '../types/index'
 import '../styles/lesson.css'
 
 interface LessonDetailProps {

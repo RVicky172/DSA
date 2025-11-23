@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useAuth } from '../context/AuthContext.js'
+import { useAuth } from '../context/AuthContext'
 import '../styles/auth.css'
 
 interface LoginProps {
@@ -24,7 +24,11 @@ export const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup }) => 
         throw new Error('Email and password are required')
       }
 
+      console.log('🔐 Attempting login with email:', email)
+      
       await login(email, password)
+      
+      console.log('✅ Login successful!')
       
       // Reset form
       setEmail('')
@@ -34,8 +38,8 @@ export const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup }) => 
       onSuccess?.()
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed'
+      console.error('❌ Login error:', errorMessage, err)
       setError(errorMessage)
-      console.error('Login error:', err)
     } finally {
       setLoading(false)
     }

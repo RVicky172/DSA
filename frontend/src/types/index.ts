@@ -32,6 +32,7 @@ export interface User {
 export interface AuthContextType {
   user: User | null
   isLoggedIn: boolean
+  loading: boolean
   login: (email: string, password: string) => Promise<void>
   logout: () => void
   signup: (

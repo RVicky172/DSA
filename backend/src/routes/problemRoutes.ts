@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express'
 import { problemService, CreateProblemInput, UpdateProblemInput } from '../services/problemService'
 import { lessonService } from '../services/lessonService'
+import { submissionService } from '../services/submissionService'
 import { verifyToken, isInstructor, isAdmin } from '../middleware/authMiddleware'
 import type { ApiResponse } from '../types'
 import type { AuthRequest } from '../middleware/authMiddleware'
@@ -214,6 +215,99 @@ router.put(
         success: true,
         data: updatedProblem,
         message: 'Problem updated successfully'
+      }
+
+      res.json(response)
+    } catch (error) {
+      _next(error)
+    }
+  }
+)
+
+// POST /api/v1/problems/:id/submit - Submit solution
+router.post(
+  '/:id/submit',
+  verifyToken,
+  async (req: AuthRequest, res: Response, _next: NextFunction) => {
+    try {
+      const { code, language } = req.body
+      const problemId = req.params.id
+      const userId = req.user!.userId
+
+      if (!code || !language) {
+        const response: ApiResponse<null> = {
+          success: false,
+          data: null,
+          message: 'Missing required fields: code, language'
+        }
+        res.status(400).json(response)
+        return
+      }
+
+      const result = await submissionService.submitSolution(userId, problemId, code, language)
+
+      const response: ApiResponse<typeof result> = {
+        success: true,
+        data: result,
+        message: 'Solution submitted successfully'
+      }
+
+      res.status(201).json(response)
+    } catch (error) {
+      _next(error)
+    }
+  }
+)
+
+// POST /api/v1/problems/:id/run - Run code (visible test cases only)
+router.post(
+  '/:id/run',
+  verifyToken,
+  async (req: AuthRequest, res: Response, _next: NextFunction) => {
+    try {
+      const { code, language } = req.body
+      const problemId = req.params.id
+
+      if (!code || !language) {
+        const response: ApiResponse<null> = {
+          success: false,
+          data: null,
+          message: 'Missing required fields: code, language'
+        }
+        res.status(400).json(response)
+        return
+      }
+
+      const results = await submissionService.runCode(code, language, problemId)
+
+      const response: ApiResponse<typeof results> = {
+        success: true,
+        data: results,
+        message: 'Code executed successfully'
+      }
+
+      res.json(response)
+    } catch (error) {
+      _next(error)
+    }
+  }
+)
+
+// GET /api/v1/problems/:id/submissions - Get user's submissions for a problem
+router.get(
+  '/:id/submissions',
+  verifyToken,
+  async (req: AuthRequest, res: Response, _next: NextFunction) => {
+    try {
+      const problemId = req.params.id
+      const userId = req.user!.userId
+
+      const submissions = await submissionService.getUserSubmissions(userId, problemId)
+
+      const response: ApiResponse<typeof submissions> = {
+        success: true,
+        data: submissions,
+        message: 'Submissions retrieved successfully'
       }
 
       res.json(response)

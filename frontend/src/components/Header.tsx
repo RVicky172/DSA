@@ -28,9 +28,6 @@ export const Header: React.FC = () => {
     navigate('/auth')
   }
 
-  const handleLessonsClick = (): void => {
-    navigate('/lessons')
-  }
 
   return (
     <header className="app-header">
@@ -43,12 +40,14 @@ export const Header: React.FC = () => {
           {isLoggedIn ? (
             <div className="user-menu">
               <span className="user-name">👤 {user?.username}</span>
-              <button
-                className="btn-secondary"
-                onClick={handleLessonsClick}
-                aria-label="Go to lessons"
-              >
+              <button onClick={() => navigate('/lessons')} className="nav-link">
                 Lessons
+              </button>
+              <button onClick={() => navigate('/problems')} className="nav-link">
+                Problems
+              </button>
+              <button onClick={() => navigate('/dashboard')} className="nav-link">
+                Dashboard
               </button>
               <button
                 className="btn-secondary"

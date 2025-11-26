@@ -10,6 +10,9 @@ import { HomePage } from './pages/HomePage'
 import { AuthPage } from './pages/AuthPage'
 import { LessonsPage } from './pages/LessonsPage'
 import { LessonDetailPage } from './pages/LessonDetailPage'
+import { ProblemsListPage } from './pages/ProblemsListPage'
+import { ProblemPage } from './pages/ProblemPage'
+import { DashboardPage } from './pages/DashboardPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import './styles.css'
 
@@ -33,6 +36,30 @@ const AppContent: React.FC = () => {
           element={
             <PrivateRoute>
               <LessonDetailPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/problems"
+          element={
+            <PrivateRoute>
+              <ProblemsListPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/problems/:id"
+          element={
+            <PrivateRoute>
+              <ProblemPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <DashboardPage />
             </PrivateRoute>
           }
         />

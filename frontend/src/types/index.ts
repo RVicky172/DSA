@@ -49,6 +49,58 @@ export interface LessonContextType {
   fetchLessons: () => Promise<void>
 }
 
+export interface TestCase {
+  id: string
+  input: string
+  output: string
+  isHidden: boolean
+}
+
+export interface Problem {
+  id: string
+  title: string
+  description: string
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD'
+  initialCode: string
+  language: string
+  lessonId: string
+  testCases?: TestCase[]
+}
+
+export interface ExecutionResult {
+  stdout: string
+  stderr: string
+  exitCode: number
+  executionTime: number
+  memoryUsage: number
+  error?: string
+}
+
+export interface TestResult {
+  input: string
+  expectedOutput: string
+  actualOutput: string
+  status: 'PASSED' | 'FAILED' | 'ERROR'
+  executionTime: number
+}
+
+export interface SubmissionResult {
+  submissionId: string
+  status: 'ACCEPTED' | 'WRONG_ANSWER' | 'TIME_LIMIT_EXCEEDED' | 'RUNTIME_ERROR' | 'COMPILATION_ERROR'
+  score: number
+  testResults: TestResult[]
+}
+
+export interface Submission {
+  id: string
+  code: string
+  language: string
+  status: string
+  result: string | null
+  score: number
+  createdAt: string
+}
+
 export interface ProblemSolution {
   code: string
   language: string

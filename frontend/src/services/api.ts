@@ -8,6 +8,10 @@ import type {
   Lesson,
   LessonsData,
   User,
+  Problem,
+  SubmissionResult,
+  ExecutionResult,
+  Submission
 } from '../types/index'
 
 const API_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:4000'
@@ -22,15 +26,15 @@ async function apiCall<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const url = `${API_URL}${endpoint}`
-  
+
   console.log(`📡 API Call: ${options.method || 'GET'} ${url}`)
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(typeof options.headers === 'object' && options.headers !== null
       ? Object.fromEntries(
-          Object.entries(options.headers).map(([k, v]) => [k, String(v)])
-        )
+        Object.entries(options.headers).map(([k, v]) => [k, String(v)])
+      )
       : {}),
   }
 
@@ -43,7 +47,7 @@ async function apiCall<T>(
 
   try {
     console.log('📤 Sending request with headers:', headers)
-    
+
     const response = await fetch(url, {
       ...options,
       headers,
@@ -54,7 +58,7 @@ async function apiCall<T>(
     // Handle network errors
     if (!response.ok) {
       let errorMessage = 'Request failed'
-      
+
       try {
         const errorData: ApiResponse<null> = await response.json()
         errorMessage = errorData.error || `HTTP ${response.status}: ${response.statusText}`
@@ -67,7 +71,7 @@ async function apiCall<T>(
     }
 
     const data: ApiResponse<T> = await response.json()
-    
+
     console.log('✅ Response received:', data)
 
     if (!data.success) {
@@ -152,21 +156,49 @@ export async function getCurrentUser(): Promise<User> {
 /**
  * Problem endpoints
  */
-export async function getProblemsByLessonId(
-  lessonId: number
-): Promise<Array<{ id: number; title: string }>> {
-  return apiCall(`/api/v1/lessons/${lessonId}/problems`)
+export async function getProblems(filters: {
+  lessonId?: string
+  difficulty?: 'EASY' | 'MEDIUM' | 'HARD'
+  skip?: number
+  take?: number
+} = {}): Promise<{ problems: Problem[]; total: number }> {
+  const params = new URLSearchParams()
+  if (filters.lessonId) params.append('lessonId', filters.lessonId)
+  if (filters.difficulty) params.append('difficulty', filters.difficulty)
+  if (filters.skip) params.append('skip', filters.skip.toString())
+  if (filters.take) params.append('take', filters.take.toString())
+
+  return apiCall(`/api/v1/problems?${params.toString()}`)
+}
+
+export async function getProblemById(id: string): Promise<Problem> {
+  return apiCall(`/api/v1/problems/${id}`)
+}
+
+export async function runCode(
+  problemId: string,
+  code: string,
+  language: string
+): Promise<ExecutionResult[]> {
+  return apiCall(`/api/v1/problems/${problemId}/run`, {
+    method: 'POST',
+    body: JSON.stringify({ code, language }),
+  })
 }
 
 export async function submitSolution(
-  problemId: number,
+  problemId: string,
   code: string,
   language: string
-): Promise<{ passed: boolean; output: string }> {
-  return apiCall('/api/v1/problems/submit', {
+): Promise<SubmissionResult> {
+  return apiCall(`/api/v1/problems/${problemId}/submit`, {
     method: 'POST',
-    body: JSON.stringify({ problemId, code, language }),
+    body: JSON.stringify({ code, language }),
   })
+}
+
+export async function getSubmissionHistory(problemId: string): Promise<Submission[]> {
+  return apiCall(`/api/v1/problems/${problemId}/submissions`)
 }
 
 export default {
@@ -177,6 +209,9 @@ export default {
   signup,
   logout,
   getCurrentUser,
-  getProblemsByLessonId,
+  getProblems,
+  getProblemById,
+  runCode,
   submitSolution,
+  getSubmissionHistory
 }

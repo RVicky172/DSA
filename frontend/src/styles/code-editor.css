@@ -1,0 +1,119 @@
+.code-editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.editor-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: #252526;
+  border-bottom: 1px solid #333;
+}
+
+.toolbar-left, .toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.language-select {
+  background-color: #3c3c3c;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+.language-select:focus {
+  border-color: #007acc;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.run-btn, .submit-btn {
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.run-btn {
+  background-color: #3c3c3c;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+.run-btn:hover:not(:disabled) {
+  background-color: #4a4a4a;
+}
+
+.submit-btn {
+  background-color: #0e639c;
+  color: #fff;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: #1177bb;
+}
+
+.run-btn:disabled, .submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.monaco-wrapper {
+  flex: 1;
+  min-height: 0; /* Important for flex child scrolling */
+}
+
+/* Light theme overrides */
+.code-editor-container:has(.monaco-editor.vs) {
+  background-color: #fff;
+  border-color: #e0e0e0;
+}
+
+.code-editor-container:has(.monaco-editor.vs) .editor-toolbar {
+  background-color: #f3f3f3;
+  border-bottom-color: #e0e0e0;
+}
+
+.code-editor-container:has(.monaco-editor.vs) .language-select {
+  background-color: #fff;
+  color: #333;
+  border-color: #ccc;
+}
+
+.code-editor-container:has(.monaco-editor.vs) .run-btn {
+  background-color: #fff;
+  color: #333;
+  border-color: #ccc;
+}
+
+.code-editor-container:has(.monaco-editor.vs) .run-btn:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}

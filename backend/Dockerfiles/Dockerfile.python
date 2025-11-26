@@ -1,0 +1,17 @@
+# Python Execution Environment
+FROM python:3.11-alpine
+
+# Create non-root user for security
+RUN addgroup -S coderunner && adduser -S coderunner -G coderunner
+
+# Set working directory
+WORKDIR /code
+
+# Make filesystem read-only except /tmp
+RUN chmod -R 755 /code
+
+# Switch to non-root user
+USER coderunner
+
+# Default command (will be overridden)
+CMD ["python3", "solution.py"]

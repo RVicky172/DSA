@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import '../styles/header.css'
@@ -7,7 +7,6 @@ import '../styles/header.css'
 export const Header: React.FC = () => {
   const { isLoggedIn, user, logout } = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
   const { addToast } = useToast()
 
   const handleLogout = (): void => {
@@ -29,9 +28,6 @@ export const Header: React.FC = () => {
     navigate('/auth')
   }
 
-  const handleLessonsClick = (): void => {
-    navigate('/lessons')
-  }
 
   return (
     <header className="app-header">
@@ -44,14 +40,16 @@ export const Header: React.FC = () => {
           {isLoggedIn ? (
             <div className="user-menu">
               <span className="user-name">👤 {user?.username}</span>
-              <button 
-                className="btn-secondary"
-                onClick={handleLessonsClick}
-                aria-label="Go to lessons"
-              >
+              <button onClick={() => navigate('/lessons')} className="nav-link">
                 Lessons
               </button>
-              <button 
+              <button onClick={() => navigate('/problems')} className="nav-link">
+                Problems
+              </button>
+              <button onClick={() => navigate('/dashboard')} className="nav-link">
+                Dashboard
+              </button>
+              <button
                 className="btn-secondary"
                 onClick={handleLogout}
                 aria-label="Logout"
@@ -61,14 +59,14 @@ export const Header: React.FC = () => {
             </div>
           ) : (
             <div className="auth-buttons">
-              <button 
+              <button
                 className="btn-secondary"
                 onClick={handleLoginClick}
                 aria-label="Login"
               >
                 Login
               </button>
-              <button 
+              <button
                 className="btn-primary"
                 onClick={handleLoginClick}
                 aria-label="Sign up"

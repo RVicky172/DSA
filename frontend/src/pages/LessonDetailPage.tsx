@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { LessonDetail } from '../components/LessonDetail'
 import '../styles/lesson-detail-page.css'
@@ -14,7 +14,7 @@ export const LessonDetailPage: React.FC = () => {
 
   return (
     <div className="lesson-detail-page">
-      <LessonDetail 
+      <LessonDetail
         lessonId={lessonId}
         onBack={() => navigate('/lessons')}
       />

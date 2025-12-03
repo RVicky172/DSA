@@ -41,9 +41,10 @@ export const LessonsPage: React.FC = () => {
     })
   }
 
-  const handleLessonClick = (lessonId: number): void => {
+  const handleLessonClick = (lessonId: string): void => {
     navigate(`/lessons/${lessonId}`)
   }
+
 
   const filteredLessons = getFilteredLessons()
   const categories = [...new Set(lessons?.lessons.map((l) => l.category) || [])]
@@ -70,9 +71,9 @@ export const LessonsPage: React.FC = () => {
           <div className="filters">
             <div className="filter-group">
               <label htmlFor="category">Category:</label>
-              <select 
+              <select
                 id="category"
-                value={filterCategory} 
+                value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
               >
                 <option value="all">All Categories</option>
@@ -86,9 +87,9 @@ export const LessonsPage: React.FC = () => {
 
             <div className="filter-group">
               <label htmlFor="difficulty">Difficulty:</label>
-              <select 
+              <select
                 id="difficulty"
-                value={filterDifficulty} 
+                value={filterDifficulty}
                 onChange={(e) => setFilterDifficulty(e.target.value)}
               >
                 <option value="all">All Levels</option>
@@ -104,8 +105,8 @@ export const LessonsPage: React.FC = () => {
           <div className="lessons-grid">
             {filteredLessons.length > 0 ? (
               filteredLessons.map((lesson) => (
-                <div 
-                  key={lesson.id} 
+                <div
+                  key={lesson.id}
                   className="lesson-card"
                   onClick={() => handleLessonClick(lesson.id)}
                   role="button"

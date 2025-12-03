@@ -6,6 +6,12 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { ToastContainer } from './components/ToastContainer'
 import { Header } from './components/Header'
 import { PrivateRoute } from './components/PrivateRoute'
+import { ProtectedRoute } from './components/ProtectedRoute'
+import AdminDashboard from './pages/AdminDashboard'
+import ManageLessonsPage from './pages/ManageLessonsPage'
+import ManageProblemsPage from './pages/ManageProblemsPage'
+import LessonForm from './components/LessonForm'
+import ProblemForm from './components/ProblemForm'
 import { HomePage } from './pages/HomePage'
 import { AuthPage } from './pages/AuthPage'
 import { LessonsPage } from './pages/LessonsPage'
@@ -61,6 +67,63 @@ const AppContent: React.FC = () => {
             <PrivateRoute>
               <DashboardPage />
             </PrivateRoute>
+          }
+        />
+        {/* Admin routes - protected by role */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requiredRole="INSTRUCTOR">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/lessons"
+          element={
+            <ProtectedRoute requiredRole="INSTRUCTOR">
+              <ManageLessonsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/lessons/new"
+          element={
+            <ProtectedRoute requiredRole="INSTRUCTOR">
+              <LessonForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/lessons/:id/edit"
+          element={
+            <ProtectedRoute requiredRole="INSTRUCTOR">
+              <LessonForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/problems"
+          element={
+            <ProtectedRoute requiredRole="INSTRUCTOR">
+              <ManageProblemsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/problems/new"
+          element={
+            <ProtectedRoute requiredRole="INSTRUCTOR">
+              <ProblemForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/problems/:id/edit"
+          element={
+            <ProtectedRoute requiredRole="INSTRUCTOR">
+              <ProblemForm />
+            </ProtectedRoute>
           }
         />
         <Route path="/404" element={<NotFoundPage />} />

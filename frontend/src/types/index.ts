@@ -10,12 +10,13 @@ export interface ApiResponse<T> {
 }
 
 export interface Lesson {
-  id: number
+  id: string
   title: string
-  difficulty: 'Easy' | 'Medium' | 'Hard'
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD'
   category: string
   description: string
   content: string
+  createdAt?: string
 }
 
 export interface LessonsData {
@@ -26,7 +27,7 @@ export interface User {
   id: string
   email: string
   username: string
-  role: 'student' | 'instructor' | 'admin'
+  role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN'
 }
 
 export interface AuthContextType {
@@ -65,6 +66,7 @@ export interface Problem {
   language: string
   lessonId: string
   testCases?: TestCase[]
+  createdAt?: string
 }
 
 export interface ExecutionResult {

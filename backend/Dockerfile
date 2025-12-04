@@ -1,40 +1,24 @@
-# Multi-stage build for DSA Learning Platform (TypeScript + Node.js + React)
-# Production build with optimized images for both frontend and backend
-
-# Stage 1: Build frontend
-FROM node:18-alpine AS frontend-builder
+# Multi-stage build for DSA Backend (TypeScript + Node.js)
+# Stage 1: Build stage
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-COPY frontend/package*.json ./
-
-RUN npm ci
-
-COPY frontend/src ./src
-COPY frontend/public ./public
-COPY frontend/index.html ./
-COPY frontend/vite.config.ts ./
-COPY frontend/tsconfig.json ./
-COPY frontend/tsconfig.node.json ./
-
-RUN npm run build
-
-# Stage 2: Build backend
-FROM node:18-alpine AS backend-builder
-
-WORKDIR /app
-
+# Copy package files
 COPY backend/package*.json ./
 
+# Install dependencies (including devDependencies for build)
 RUN npm ci
 
+# Copy source code
 COPY backend/src ./src
 COPY backend/prisma ./prisma
 COPY backend/tsconfig.json ./
 
+# Build TypeScript
 RUN npm run build
 
-# Stage 3: Runtime stage with backend + frontend
+# Stage 2: Runtime stage (minimal image)
 FROM node:18-alpine
 
 WORKDIR /app
@@ -42,21 +26,18 @@ WORKDIR /app
 # Install dumb-init for proper signal handling
 RUN apk add --no-cache dumb-init
 
-# Copy backend dependencies
+# Copy package files
 COPY backend/package*.json ./
 
 # Install only production dependencies
 RUN npm ci --omit=dev && \
     npm cache clean --force
 
-# Copy built backend from builder
-COPY --from=backend-builder /app/dist ./dist
+# Copy built application from builder
+COPY --from=builder /app/dist ./dist
 
-# Copy prisma for runtime
+# Copy prisma schema for runtime (if needed)
 COPY backend/prisma ./prisma
-
-# Copy built frontend to serve as static files
-COPY --from=frontend-builder /app/dist ./public
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
@@ -64,16 +45,15 @@ RUN addgroup -g 1001 -S nodejs && \
 
 USER nodejs
 
-# Expose ports
+# Expose port
 EXPOSE 4000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
   CMD node -e "require('http').get('http://localhost:4000/api/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})" || exit 1
 
-# Use dumb-init for proper signal handling
+# Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
 # Start application
 CMD ["node", "dist/index.js"]
-

@@ -201,6 +201,123 @@ export async function getSubmissionHistory(problemId: string): Promise<Submissio
   return apiCall(`/api/v1/problems/${problemId}/submissions`)
 }
 
+/**
+ * Admin endpoints
+ */
+export async function getAdminStats(): Promise<{
+  users: number
+  lessons: number
+  problems: number
+  submissions: number
+  recentActivity: Array<{
+    id: string
+    username: string
+    problemTitle: string
+    status: string
+    score: number
+    createdAt: string
+  }>
+}> {
+  return apiCall('/api/v1/admin/stats')
+}
+
+export async function getAllUsers(filters: {
+  skip?: number
+  take?: number
+} = {}): Promise<{
+  users: Array<{
+    id: string
+    email: string
+    username: string
+    role: string
+    createdAt: string
+    _count: {
+      submissions: number
+      lessons: number
+    }
+  }>
+  total: number
+  page: number
+  pageSize: number
+}> {
+  const params = new URLSearchParams()
+  if (filters.skip) params.append('skip', filters.skip.toString())
+  if (filters.take) params.append('take', filters.take.toString())
+
+  return apiCall(`/api/v1/admin/users?${params.toString()}`)
+}
+
+export async function updateUserRole(userId: string, role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN'): Promise<User> {
+  return apiCall(`/api/v1/admin/users/${userId}/role`, {
+    method: 'PUT',
+    body: JSON.stringify({ role }),
+  })
+}
+
+export async function createLesson(data: {
+  title: string
+  description: string
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD'
+  category: string
+  content: string
+}): Promise<Lesson> {
+  return apiCall('/api/v1/lessons', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updateLesson(id: string, data: {
+  title?: string
+  description?: string
+  difficulty?: 'EASY' | 'MEDIUM' | 'HARD'
+  category?: string
+  content?: string
+}): Promise<Lesson> {
+  return apiCall(`/api/v1/lessons/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteLesson(id: string): Promise<void> {
+  return apiCall(`/api/v1/lessons/${id}`, {
+    method: 'DELETE',
+  })
+}
+
+export async function createProblem(data: {
+  title: string
+  description: string
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD'
+  initialCode: string
+  lessonId: string
+  language?: string
+}): Promise<Problem> {
+  return apiCall('/api/v1/problems', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updateProblem(id: string, data: {
+  title?: string
+  description?: string
+  difficulty?: 'EASY' | 'MEDIUM' | 'HARD'
+  initialCode?: string
+}): Promise<Problem> {
+  return apiCall(`/api/v1/problems/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteProblem(id: string): Promise<void> {
+  return apiCall(`/api/v1/problems/${id}`, {
+    method: 'DELETE',
+  })
+}
+
 export default {
   checkHealth,
   getLessons,
@@ -213,5 +330,14 @@ export default {
   getProblemById,
   runCode,
   submitSolution,
-  getSubmissionHistory
+  getSubmissionHistory,
+  getAdminStats,
+  getAllUsers,
+  updateUserRole,
+  createLesson,
+  updateLesson,
+  deleteLesson,
+  createProblem,
+  updateProblem,
+  deleteProblem
 }

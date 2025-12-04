@@ -1,7 +1,12 @@
-# Development Dockerfile with hot-reload and TypeScript
+# Development Dockerfile with hot-reload capability
+# Supports both backend and frontend development with nodemon and Vite
+
 FROM node:18-alpine
 
 WORKDIR /app
+
+# Install dumb-init for proper signal handling in containers
+RUN apk add --no-cache dumb-init
 
 # Copy root package files
 COPY package.json package-lock.json ./
@@ -10,10 +15,14 @@ COPY package.json package-lock.json ./
 COPY backend ./backend
 COPY frontend ./frontend
 
-# Install all dependencies (including dev)
+# Install all dependencies (including dev dependencies)
 RUN npm run install:all
 
+# Expose both development ports
 EXPOSE 4000 3000
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
 
 # Default to running backend dev with ts-node, can override with frontend or both
 CMD ["npm", "run", "start:backend"]

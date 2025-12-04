@@ -6,6 +6,8 @@ import { ApiResponse } from './types'
 import authRoutes from './routes/authRoutes'
 import lessonRoutes from './routes/lessonRoutes'
 import problemRoutes from './routes/problemRoutes'
+import adminRoutes from './routes/adminRoutes'
+import { securityMiddleware, sanitizeInput } from './middleware/securityMiddleware'
 
 dotenv.config()
 
@@ -14,17 +16,25 @@ const PORT = process.env.PORT || 4000
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  origin: process.env.CORS_ORIGIN || ['http://localhost:3000', 'http://127.0.0.1:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200,
 }
 
-// Middleware
+// Security Middleware - Apply early in the middleware chain
+app.use(securityMiddleware())
+
+// CORS
 app.use(cors(corsOptions))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+
+// Body parsing middleware
+app.use(express.json({ limit: process.env.MAX_FILE_SIZE || '5mb' }))
+app.use(express.urlencoded({ extended: true, limit: process.env.MAX_FILE_SIZE || '5mb' }))
+
+// Input sanitization
+app.use(sanitizeInput)
 
 // Serve static frontend in production
 const publicPath = path.join(__dirname, '..', 'public')
@@ -47,6 +57,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/lessons', lessonRoutes)
 app.use('/api/v1/problems', problemRoutes)
+app.use('/api/v1/admin', adminRoutes)
 
 // Sample data (will be replaced with database)
 // Note: This data is no longer used - lessons are now served from the database via /api/v1/lessons

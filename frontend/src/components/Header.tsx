@@ -49,6 +49,11 @@ export const Header: React.FC = () => {
               <button onClick={() => navigate('/dashboard')} className="nav-link">
                 Dashboard
               </button>
+              {(user?.role === 'INSTRUCTOR' || user?.role === 'ADMIN') && (
+                <button onClick={() => navigate('/admin')} className="nav-link admin-link">
+                  Admin
+                </button>
+              )}
               <button
                 className="btn-secondary"
                 onClick={handleLogout}

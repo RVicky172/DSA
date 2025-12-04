@@ -3,14 +3,13 @@ version: '3.8'
 services:
   db:
     image: postgres:15-alpine
-    container_name: dsa-db-prod
+    container_name: dsa-db-staging
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./backups:/backups
+      - postgres_data_staging:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
@@ -20,19 +19,10 @@ services:
       retries: 5
     networks:
       - dsa-network
-    restart: always
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   redis:
     image: redis:7-alpine
-    container_name: dsa-redis-prod
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
-    volumes:
-      - redis_data:/data
+    container_name: dsa-redis-staging
     ports:
       - "6379:6379"
     healthcheck:
@@ -42,32 +32,22 @@ services:
       retries: 5
     networks:
       - dsa-network
-    restart: always
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   backend:
-    image: dsa-backend:latest
-    container_name: dsa-backend-prod
     build:
       context: .
       dockerfile: Dockerfile
-      cache_from:
-        - dsa-backend:latest
+    container_name: dsa-backend-staging
     ports:
       - "4000:4000"
     environment:
       - PORT=4000
-      - NODE_ENV=production
+      - NODE_ENV=staging
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
       - JWT_SECRET=${JWT_SECRET}
       - CORS_ORIGIN=${CORS_ORIGIN}
-      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
-      - LOG_LEVEL=warn
-      - SENTRY_DSN=${SENTRY_DSN}
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=info
     depends_on:
       db:
         condition: service_healthy
@@ -75,58 +55,36 @@ services:
         condition: service_healthy
     networks:
       - dsa-network
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 20s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
-    labels:
-      com.example.description: "DSA Backend Production"
 
   frontend:
-    image: dsa-frontend:latest
-    container_name: dsa-frontend-prod
     build:
       context: .
       dockerfile: Dockerfile
-      cache_from:
-        - dsa-frontend:latest
+    container_name: dsa-frontend-staging
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
-      - VITE_API_URL=${API_URL}
+      - NODE_ENV=staging
+      - VITE_API_URL=https://api-staging.example.com
     depends_on:
       - backend
     networks:
       - dsa-network
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 20s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
-    labels:
-      com.example.description: "DSA Frontend Production"
 
 volumes:
-  postgres_data:
-    driver: local
-  redis_data:
-    driver: local
+  postgres_data_staging:
 
 networks:
   dsa-network:

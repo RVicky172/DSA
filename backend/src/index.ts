@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes'
 import lessonRoutes from './routes/lessonRoutes'
 import problemRoutes from './routes/problemRoutes'
 import adminRoutes from './routes/adminRoutes'
+import { securityMiddleware, sanitizeInput } from './middleware/securityMiddleware'
 
 dotenv.config()
 
@@ -15,17 +16,25 @@ const PORT = process.env.PORT || 4000
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  origin: process.env.CORS_ORIGIN || ['http://localhost:3000', 'http://127.0.0.1:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200,
 }
 
-// Middleware
+// Security Middleware - Apply early in the middleware chain
+app.use(securityMiddleware())
+
+// CORS
 app.use(cors(corsOptions))
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+
+// Body parsing middleware
+app.use(express.json({ limit: process.env.MAX_FILE_SIZE || '5mb' }))
+app.use(express.urlencoded({ extended: true, limit: process.env.MAX_FILE_SIZE || '5mb' }))
+
+// Input sanitization
+app.use(sanitizeInput)
 
 // Serve static frontend in production
 const publicPath = path.join(__dirname, '..', 'public')

@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { executionService } from './executionService'
+import { executeCode } from './executionService'
 
 const prisma = new PrismaClient()
 
@@ -51,7 +51,7 @@ class SubmissionService {
 
             // 3. Execute against each test case
             for (const testCase of problem.testCases) {
-                const result = await executionService.executeCode(code, language, testCase.input)
+                const result = await executeCode(code, language, testCase.input)
 
                 const isPassed = result.exitCode === 0 && result.stdout.trim() === testCase.output.trim()
 
@@ -137,7 +137,7 @@ class SubmissionService {
 
         const results = []
         for (const testCase of problem.testCases) {
-            const result = await executionService.executeCode(code, language, testCase.input)
+            const result = await executeCode(code, language, testCase.input)
             results.push({
                 input: testCase.input,
                 expectedOutput: testCase.output,

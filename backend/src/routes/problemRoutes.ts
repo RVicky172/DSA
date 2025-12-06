@@ -45,6 +45,56 @@ router.get('/', async (_req: Request, res: Response, _next: NextFunction) => {
   }
 })
 
+// GET /api/v1/problems/search?q=query - Search problems
+router.get('/search', async (_req: Request, res: Response, _next: NextFunction) => {
+  try {
+    const query = typeof _req.query.q === 'string' ? _req.query.q : ''
+    const lessonId = typeof _req.query.lessonId === 'string' ? _req.query.lessonId : undefined
+    const difficulty = typeof _req.query.difficulty === 'string' ? _req.query.difficulty : undefined
+    const skip = typeof _req.query.skip === 'string' ? parseInt(_req.query.skip, 10) : 0
+    const take = typeof _req.query.take === 'string' ? parseInt(_req.query.take, 10) : 10
+
+    if (!query || query.trim().length === 0) {
+      const response: ApiResponse<null> = {
+        success: false,
+        data: null,
+        message: 'Search query is required (q parameter)'
+      }
+      res.status(400).json(response)
+      return
+    }
+
+    const { problems, total } = await problemService.searchProblems(query, {
+      lessonId,
+      difficulty: difficulty as 'EASY' | 'MEDIUM' | 'HARD' | undefined,
+      skip,
+      take
+    })
+
+    const response: ApiResponse<{
+      problems: typeof problems
+      total: number
+      page: number
+      pageSize: number
+      query: string
+    }> = {
+      success: true,
+      data: {
+        problems,
+        total,
+        page: Math.ceil(skip / take) + 1,
+        pageSize: take,
+        query
+      },
+      message: 'Problems search completed successfully'
+    }
+
+    res.json(response)
+  } catch (error) {
+    _next(error)
+  }
+})
+
 // GET /api/v1/problems/:id - Get problem by ID
 router.get('/:id', async (req: Request, res: Response, _next: NextFunction) => {
   try {

@@ -119,6 +119,46 @@ class LessonService {
   async getTotalLessonCount(): Promise<number> {
     return prisma.lesson.count()
   }
+
+  // Search lessons by title, description, or content
+  async searchLessons(
+    query: string,
+    filters: {
+      category?: string
+      difficulty?: 'EASY' | 'MEDIUM' | 'HARD'
+      skip?: number
+      take?: number
+    } = {}
+  ): Promise<{
+    lessons: Lesson[]
+    total: number
+  }> {
+    const { category, difficulty, skip = 0, take = 10 } = filters
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {
+      OR: [
+        { title: { contains: query, mode: 'insensitive' } },
+        { description: { contains: query, mode: 'insensitive' } },
+        { content: { contains: query, mode: 'insensitive' } }
+      ]
+    }
+
+    if (category) where.category = category
+    if (difficulty) where.difficulty = difficulty
+
+    const [lessons, total] = await Promise.all([
+      prisma.lesson.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' }
+      }),
+      prisma.lesson.count({ where })
+    ])
+
+    return { lessons, total }
+  }
 }
 
 export const lessonService = new LessonService()

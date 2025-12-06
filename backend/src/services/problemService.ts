@@ -111,6 +111,45 @@ class ProblemService {
   async getProblemCountByLesson(lessonId: string): Promise<number> {
     return prisma.problem.count({ where: { lessonId } })
   }
+
+  // Search problems by title or description
+  async searchProblems(
+    query: string,
+    filters: {
+      lessonId?: string
+      difficulty?: 'EASY' | 'MEDIUM' | 'HARD'
+      skip?: number
+      take?: number
+    } = {}
+  ): Promise<{
+    problems: Problem[]
+    total: number
+  }> {
+    const { lessonId, difficulty, skip = 0, take = 10 } = filters
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {
+      OR: [
+        { title: { contains: query, mode: 'insensitive' } },
+        { description: { contains: query, mode: 'insensitive' } }
+      ]
+    }
+
+    if (lessonId) where.lessonId = lessonId
+    if (difficulty) where.difficulty = difficulty
+
+    const [problems, total] = await Promise.all([
+      prisma.problem.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' }
+      }),
+      prisma.problem.count({ where })
+    ])
+
+    return { problems, total }
+  }
 }
 
 export const problemService = new ProblemService()

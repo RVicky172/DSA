@@ -7,6 +7,8 @@ import authRoutes from './routes/authRoutes'
 import lessonRoutes from './routes/lessonRoutes'
 import problemRoutes from './routes/problemRoutes'
 import adminRoutes from './routes/adminRoutes'
+import analyticsRoutes from './routes/analyticsRoutes'
+import recommendationRoutes from './routes/recommendationRoutes'
 import { securityMiddleware, sanitizeInput } from './middleware/securityMiddleware'
 
 dotenv.config()
@@ -58,6 +60,8 @@ app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/lessons', lessonRoutes)
 app.use('/api/v1/problems', problemRoutes)
 app.use('/api/v1/admin', adminRoutes)
+app.use('/api/v1/analytics', analyticsRoutes)
+app.use('/api/v1/recommendations', recommendationRoutes)
 
 // Sample data (will be replaced with database)
 // Note: This data is no longer used - lessons are now served from the database via /api/v1/lessons

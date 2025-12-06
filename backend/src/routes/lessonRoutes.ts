@@ -43,6 +43,56 @@ router.get('/', async (_req: Request, res: Response, _next: NextFunction) => {
   }
 })
 
+// GET /api/v1/lessons/search?q=query - Search lessons
+router.get('/search', async (_req: Request, res: Response, _next: NextFunction) => {
+  try {
+    const query = typeof _req.query.q === 'string' ? _req.query.q : ''
+    const category = typeof _req.query.category === 'string' ? _req.query.category : undefined
+    const difficulty = typeof _req.query.difficulty === 'string' ? _req.query.difficulty : undefined
+    const skip = typeof _req.query.skip === 'string' ? parseInt(_req.query.skip, 10) : 0
+    const take = typeof _req.query.take === 'string' ? parseInt(_req.query.take, 10) : 10
+
+    if (!query || query.trim().length === 0) {
+      const response: ApiResponse<null> = {
+        success: false,
+        data: null,
+        message: 'Search query is required (q parameter)'
+      }
+      res.status(400).json(response)
+      return
+    }
+
+    const { lessons, total } = await lessonService.searchLessons(query, {
+      category,
+      difficulty: difficulty as 'EASY' | 'MEDIUM' | 'HARD' | undefined,
+      skip,
+      take
+    })
+
+    const response: ApiResponse<{
+      lessons: typeof lessons
+      total: number
+      page: number
+      pageSize: number
+      query: string
+    }> = {
+      success: true,
+      data: {
+        lessons,
+        total,
+        page: Math.ceil(skip / take) + 1,
+        pageSize: take,
+        query
+      },
+      message: 'Lessons search completed successfully'
+    }
+
+    res.json(response)
+  } catch (error) {
+    _next(error)
+  }
+})
+
 // GET /api/v1/lessons/:id - Get lesson by ID
 router.get('/:id', async (req: Request, res: Response, _next: NextFunction) => {
   try {
